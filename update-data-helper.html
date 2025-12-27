@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Entry Helper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .output {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 12px;
+        }
+        .instructions {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contact Data Entry Helper</h1>
+    
+    <div class="instructions">
+        <strong>Instructions:</strong> Fill in the contact details from your call list images.
+        When you click "Add Contact", it will be added to the output below.
+        After entering all contacts, copy the output and replace the contacts array in data.js.
+    </div>
+
+    <form id="contact-form">
+        <div class="form-group">
+            <label>ID:</label>
+            <input type="number" id="id" value="1" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Record ID:</label>
+            <input type="text" id="recordId" placeholder="e.g., 806226">
+        </div>
+        
+        <div class="form-group">
+            <label>Phone:</label>
+            <input type="text" id="phone" placeholder="e.g., (780) 123-4567" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Address:</label>
+            <input type="text" id="address" placeholder="Street address or N/A">
+        </div>
+        
+        <div class="form-group">
+            <label>Ward:</label>
+            <input type="text" id="ward" placeholder="Leave empty if not known">
+        </div>
+        
+        <div class="form-group">
+            <label>District:</label>
+            <input type="text" id="district" placeholder="Leave empty if not known">
+        </div>
+        
+        <div class="form-group">
+            <label>Tags:</label>
+            <textarea id="tags" rows="3" placeholder="Additional notes from the list"></textarea>
+        </div>
+        
+        <button type="submit">Add Contact</button>
+        <button type="button" onclick="clearForm()">Clear Form</button>
+        <button type="button" onclick="exportData()">Copy All Data</button>
+    </form>
+
+    <div class="output" id="output">Contacts will appear here...</div>
+
+    <script>
+        let contacts = [];
+        
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const contact = {
+                id: parseInt(document.getElementById('id').value),
+                recordId: document.getElementById('recordId').value,
+                phone: document.getElementById('phone').value,
+                name: document.getElementById('name').value,
+                address: document.getElementById('address').value || 'N/A',
+                ward: document.getElementById('ward').value || '',
+                district: document.getElementById('district').value || '',
+                tags: document.getElementById('tags').value || 'FROM TTHs or Texting Campaign'
+            };
+            
+            contacts.push(contact);
+            updateOutput();
+            
+            // Auto-increment ID for next entry
+            document.getElementById('id').value = contact.id + 1;
+            
+            // Clear other fields
+            document.getElementById('recordId').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('ward').value = '';
+            document.getElementById('district').value = '';
+            document.getElementById('tags').value = '';
+            
+            document.getElementById('name').focus();
+        });
+        
+        function updateOutput() {
+            const output = 'const contacts = [\n' + 
+                contacts.map(c => {
+                    return `  {id: ${c.id}, recordId: "${c.recordId}", phone: "${c.phone}", name: "${c.name}", address: "${c.address}", ward: "${c.ward}", district: "${c.district}", tags: "${c.tags}"}`;
+                }).join(',\n') + 
+                '\n];';
+            document.getElementById('output').textContent = output;
+        }
+        
+        function clearForm() {
+            document.getElementById('contact-form').reset();
+            document.getElementById('id').value = contacts.length + 1;
+        }
+        
+        function exportData() {
+            const output = document.getElementById('output').textContent;
+            navigator.clipboard.writeText(output).then(() => {
+                alert('Data copied to clipboard! Paste this into data.js');
+            });
+        }
+    </script>
+</body>
+</html>
+

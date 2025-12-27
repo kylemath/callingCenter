@@ -1,0 +1,11 @@
+{
+  "id": "callingCenter",
+  "title": "CallingCenter",
+  "oneLiner": "A webpage to call individuals on a calling list one by one automatically",
+  "demoUrl": "http://kylemath.github.io/callingCenter",
+  "screenshot": "https://raw.githubusercontent.com/kylemath/callingCenter/main/screenshot.png",
+  "kind": "project",
+  "categories": ["webpage", "calling", "election"],
+  "tags": ["webpage", "calling", "election"],
+  "status": "published"
+}
